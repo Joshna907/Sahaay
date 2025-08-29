@@ -1,0 +1,117 @@
+enum MessageType {
+  FOOD
+  WATER
+  SHELTER
+  MEDICAL
+  RESCUE
+  GENERAL
+}
+
+enum MessageStatus {
+  PENDING
+  DELIVERED
+  ACKNOWLEDGED
+  EXPIRED
+}
+
+enum UrgencyLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+type Location {
+  latitude: Float!
+  longitude: Float!
+  address: String
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String
+  location: Location
+  isActive: Boolean!
+  lastSeen: String
+  deviceId: String!
+}
+
+type DistressMessage {
+  id: ID!
+  senderId: ID!
+  sender: User!
+  messageType: MessageType!
+  urgencyLevel: UrgencyLevel!
+  content: String!
+  location: Location!
+  status: MessageStatus!
+  createdAt: String!
+  expiresAt: String
+  relayCount: Int!
+  acknowledgments: [String!]!
+}
+
+type DeviceNode {
+  id: ID!
+  deviceId: String!
+  userId: ID
+  user: User
+  location: Location
+  isOnline: Boolean!
+  lastSeen: String!
+  connectedPeers: [String!]!
+  messageQueueSize: Int!
+}
+
+input LocationInput {
+  latitude: Float!
+  longitude: Float!
+  address: String
+}
+
+input CreateDistressMessageInput {
+  messageType: MessageType!
+  urgencyLevel: UrgencyLevel!
+  content: String!
+  location: LocationInput!
+  expiresIn: Int # hours
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  phone: String
+  location: LocationInput
+  deviceId: String!
+}
+
+type Query {
+  # User queries
+  users: [User!]!
+  user(id: ID!): User
+  
+  # Message queries
+  distressMessages: [DistressMessage!]!
+  messagesByType(messageType: MessageType!): [DistressMessage!]!
+  messagesByUrgency(urgencyLevel: UrgencyLevel!): [DistressMessage!]!
+  
+  # Network queries
+  deviceNodes: [DeviceNode!]!
+  activeNodes: [DeviceNode!]!
+}
+
+type Mutation {
+  # User mutations
+  createUser(input: CreateUserInput!): User!
+  updateUserLocation(userId: ID!, location: LocationInput!): User!
+  
+  # Message mutations
+  createDistressMessage(input: CreateDistressMessageInput!): DistressMessage!
+  acknowledgeMessage(messageId: ID!, userId: ID!): DistressMessage!
+  
+  # Device mutations
+  registerDevice(deviceId: String!, userId: ID, location: LocationInput): DeviceNode!
+  updateDeviceStatus(deviceId: String!, isOnline: Boolean!): DeviceNode!
+}
