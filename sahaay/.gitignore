@@ -1,0 +1,27 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+sahaay-backend-new.exe
+sahaay-backend.exe
+main.exe
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+sahaay.db
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Desktop UI Node modules
+node_modules/
+dist/
+dist-electron/
+sahaay-desktop/node_modules/
+sahaay-desktop/dist/
+sahaay-desktop/dist-electron/

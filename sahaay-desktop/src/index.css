@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background-color: #0F1115;
+  font-family: 'Inter', sans-serif;
+  color: #E0E0E0;
+  overflow: hidden; /* App style */
+}

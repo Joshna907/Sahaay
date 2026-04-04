@@ -1,0 +1,22 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Node modules
+node_modules/
+dist/
+dist-electron/
+.env
+.env.local
+
+# OS generated files
+.DS_Store
+Thumbs.db

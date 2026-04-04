@@ -1,0 +1,53 @@
+{
+  "name": "sahaay-desktop",
+  "description": "Offline-First Emergency Mesh Network",
+  "author": "Sahaay Team",
+  "private": true,
+  "version": "0.1.0",
+  "main": "electron/main.js",
+  "type": "module",
+  "build": {
+    "appId": "com.sahaay.desktop",
+    "productName": "Sahaay Enterprise",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "extraResources": [
+      {
+        "from": "resources/bin",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node scripts/start.js",
+    "electron": "electron .",
+    "dist": "set DEBUG=electron-builder && node node_modules/vite/bin/vite.js build && node node_modules/electron-builder/cli.js"
+  },
+  "dependencies": {
+    "clsx": "^2.1.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.309.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-leaflet": "^5.0.0",
+    "tailwind-merge": "^2.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.17",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.12"
+  }
+}
