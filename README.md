@@ -6,10 +6,9 @@
 
 > **Sahaay** is a localized, offline-first tactical mesh network designed to maintain critical communication during internet blackouts and natural disasters. 
 
-## 📺 Project Demo
-*(Insert link to your video demo here!)*
 
-## 🚀 The Architecture
+
+##  The Architecture
 
 Sahaay operates through a dual-interface system powered by a robust Go backend utilizing `libp2p` for decentralized peer discovery.
 
@@ -24,7 +23,7 @@ Sahaay operates through a dual-interface system powered by a robust Go backend u
 - **Live System Monitoring:** Interfaces directly with machine stats (Battery, Connectivity) to give operators a true tactical overview.
 - **Message Prioritization:** Triage system ranging from `Low` to `CRITICAL` with visual alerting.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 * **Backend:** Go (1.24.6), Libp2p, GraphQL (99designs/gqlgen), BoltDB
 * **Frontend:** React 19, Vite, Tailwind CSS, Lucide Icons, Leaflet (Mapping)
 * **Desktop Wrapper:** Electron & Electron Builder
