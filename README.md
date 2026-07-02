@@ -23,7 +23,7 @@
 - **Backend-as-sidecar:** Electron spawns the compiled Go binary as a child process on launch and shuts it down on quit — the app is self-contained.
 - Polls the GraphQL API every 2s to refresh messages.
 
-> ⚠️ **Note:** Some status-panel metrics (CPU, temperature) are currently simulated placeholders, and the "connected peers" view depends on the not-yet-implemented mesh layer. Battery level uses the real browser Battery API.
+Heads-up on the status panel: battery is real (browser Battery API), but CPU and temperature are mocked for now, and the peers list stays empty until the mesh is in.
 
 ## 🗺️ Roadmap (designed, not yet implemented)
 - **Offline-first P2P mesh** using `libp2p` + mDNS for local peer discovery — no internet required.
