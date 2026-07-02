@@ -27,8 +27,18 @@ func (r *deviceNodeResolver) LastSeen(ctx context.Context, obj *model.DeviceNode
 }
 
 // Sender is the resolver for the sender field.
+// `sender` is non-null in the schema, but message authentication isn't wired
+// yet (SenderID is a placeholder). Rather than a DB lookup that could return
+// nil and error the whole query, return a lightweight stand-in built from the
+// ID so the API stays responsive. See roadmap: signed messages / auth.
 func (r *distressMessageResolver) Sender(ctx context.Context, obj *model.DistressMessage) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: Sender - sender"))
+	return &model.User{
+		ID:       obj.SenderID,
+		Name:     "Field Unit",
+		Email:    "",
+		DeviceID: obj.SenderID,
+		IsActive: true,
+	}, nil
 }
 
 // CreatedAt is the resolver for the createdAt field.
@@ -244,8 +254,11 @@ func (r *queryResolver) DeviceNodes(ctx context.Context) ([]*model.DeviceNode, e
 }
 
 // ActiveNodes is the resolver for the activeNodes field.
+// Peer/device tracking will come from the mesh layer, which isn't wired into
+// the API yet. Return an empty set so the client polls cleanly instead of
+// erroring on every request. See roadmap: wire mesh into GraphQL.
 func (r *queryResolver) ActiveNodes(ctx context.Context) ([]*model.DeviceNode, error) {
-	panic(fmt.Errorf("not implemented: ActiveNodes - activeNodes"))
+	return []*model.DeviceNode{}, nil
 }
 
 // DeviceNode returns generated.DeviceNodeResolver implementation.
