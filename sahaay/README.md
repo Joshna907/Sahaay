@@ -28,10 +28,24 @@ go run .
 ```
 Then open `http://localhost:8080/` for the GraphQL playground. The API endpoint is `POST /query`.
 
+## P2P mesh node (`mesh/`, `cmd/meshnode/`)
+A standalone libp2p + mDNS mesh node: local peer discovery, gossip flooding with TTL + hop count, de-duplication by content-addressed ID, and store-and-forward replay to late-joining peers. Routing logic lives in `mesh/router.go` and is unit-tested.
+
+```bash
+# Two terminals on the same network — no server, no internet:
+go run ./cmd/meshnode -name alice -send
+go run ./cmd/meshnode -name bob
+
+# Run the routing unit tests:
+go test ./mesh/
+```
+
 ## Layout
-- `server.go` — entrypoint; sets up the gqlgen server and DB connection.
+- `server.go` — GraphQL server entrypoint; sets up gqlgen and the DB connection.
 - `db/mongodb.go` — MongoDB connection.
 - `graph/` — GraphQL schema (`schema.graphqls`), resolvers, and generated code.
+- `mesh/` — P2P mesh: `message.go` (model + IDs), `router.go` (dedupe/TTL/ordering), `node.go` (libp2p host + mDNS + flooding).
+- `cmd/meshnode/` — runnable single mesh node for the two-terminal demo above.
 
 ## Roadmap
-The offline-first P2P mesh (libp2p + mDNS), message relaying, and embedded storage are planned — see the [top-level README](../README.md#️-roadmap-designed-not-yet-implemented).
+The mesh node runs standalone today; wiring it into the GraphQL server + desktop app, embedded storage, and signed messages are next — see the [top-level README](../README.md#️-roadmap-next-steps).
