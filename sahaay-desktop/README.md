@@ -1,16 +1,24 @@
-# React + Vite
+# Sahaay Desktop — Electron + React client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The desktop client for [Sahaay](../README.md). A React 19 + Vite + Tailwind UI, wrapped in Electron, that talks to the Go/GraphQL [backend](../sahaay/README.md).
 
-Currently, two official plugins are available:
+## Highlights
+- **Triage UI:** aid requests shown by severity, with CRITICAL messages visually flagged.
+- **Backend-as-sidecar:** on launch, Electron (`electron/main.js`) spawns the compiled Go backend as a child process and terminates it on quit — the app is self-contained.
+- **Map view:** Leaflet-based node/message map.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Running
+```bash
+npm install
+npm run start   # starts Vite, waits for it, then launches Electron
+```
+- `npm run dev` — React frontend only, in the browser (no Electron, no backend).
+- `npm run start` — full desktop app (spawns the bundled Go backend; requires the backend binary to be built and MongoDB running).
+- `npm run dist` — builds a packaged Windows installer via electron-builder.
 
-## React Compiler
+## Notes
+- The GraphQL endpoint defaults to `http://localhost:8080/query` (override with `VITE_GRAPHQL_URL`).
+- Some status metrics (CPU, temperature) are currently simulated placeholders; battery uses the real browser Battery API. The "connected peers" view depends on the mesh layer, which is on the roadmap.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Stack
+React 19 · Vite · Tailwind CSS · Leaflet · Electron + electron-builder

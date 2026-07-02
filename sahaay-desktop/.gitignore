@@ -10,7 +10,13 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-electron
 *.local
+
+# Build artifacts / caches (electron-builder code-sign cache, compiled binaries)
+cache/
+*.exe
+*.exe~
 
 # Editor directories and files
 .vscode/*

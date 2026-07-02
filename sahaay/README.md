@@ -1,52 +1,37 @@
-# :globe_with_meridians: Sahaay – Disaster Support & Missing Person Coordination  
+# Sahaay Backend — Go + GraphQL
 
+The backend for [Sahaay](../README.md), an emergency distress-messaging system. It exposes a GraphQL API that the desktop client consumes.
 
-> **Sahaay** is an **offline-first disaster relief and missing person coordination platform**.  
-> Built to function in **areas with little or no internet connectivity**, Sahaay leverages **multicast DNS (mDNS)** to enable **local device discovery and communication**.  
+## Stack
+- **Language:** Go 1.23+
+- **API:** GraphQL via [`99designs/gqlgen`](https://github.com/99designs/gqlgen)
+- **Database:** MongoDB (official Go driver)
 
----
+## What it does
+- Serves a GraphQL API + playground on `localhost:8080`.
+- Models distress messages: type, urgency, status lifecycle, GPS location, expiry.
+- Persists users and distress messages to MongoDB.
 
-## :rocket: Features  
+### Implemented operations
+| Type | Operation | Status |
+|------|-----------|--------|
+| Mutation | `createUser` | ✅ |
+| Mutation | `createDistressMessage` | ✅ |
+| Query | `users` | ✅ |
+| Query | `distressMessages` | ✅ |
+| Query/Mutation | device nodes, acknowledgements, filtered queries | 🚧 scaffolded, not yet implemented |
 
-- :satellite: **Offline-first communication** via mDNS (works without internet).  
-- :sos: **Request aid** – food, medical help, or supplies.  
-- :busts_in_silhouette: **Report & search for missing persons** during disasters.  
-- :signal_strength: **Local network-based device discovery** for real-time rescue coordination.  
-- :art: **Responsive UI** for easy use in high-stress situations.  
-
----
-
-## :hammer_and_wrench: Tech Stack  
-
-- **Backend:** Go :zap:  
-- **Frontend:** Next.js + TypeScript :desktop_computer:  
-- **Database:** PostgreSQL :elephant:  
-- **UI:** Tailwind CSS :art:  
-
----
-
-## :earth_africa: Why Sahaay?  
-
-During natural disasters, **internet connectivity often breaks down**.  
-Sahaay ensures:  
-:heavy_check_mark: People in **relief centers** or **rescue camps** can still connect.  
-:heavy_check_mark: Missing persons can be reported and searched locally.  
-:heavy_check_mark: Aid requests reach nearby volunteers **without internet**.  
-
----
-
-## :package: Installation & Setup  
-
+## Running
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/sahaay.git
-cd sahaay
+# Requires a MongoDB instance on mongodb://localhost:27017
+go run .
+```
+Then open `http://localhost:8080/` for the GraphQL playground. The API endpoint is `POST /query`.
 
-# Backend (Go)
-cd backend
-go run main.go
+## Layout
+- `server.go` — entrypoint; sets up the gqlgen server and DB connection.
+- `db/mongodb.go` — MongoDB connection.
+- `graph/` — GraphQL schema (`schema.graphqls`), resolvers, and generated code.
 
-# Frontend (Next.js + TS)
-cd frontend
-npm install
-npm run dev
+## Roadmap
+The offline-first P2P mesh (libp2p + mDNS), message relaying, and embedded storage are planned — see the [top-level README](../README.md#️-roadmap-designed-not-yet-implemented).

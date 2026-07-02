@@ -1,51 +1,62 @@
-# Sahaay: Offline-First Emergency Mesh Network 🛜
+# Sahaay — Emergency Distress-Messaging System 🆘
 
-[![Go Version](https://img.shields.io/badge/Go-1.24+-00ADD8?style=for-the-badge&logo=go)](https://go.dev/)
-[![React + Vite](https://img.shields.io/badge/React_Vite-Frontend-61DAFB?style=for-the-badge&logo=react)](#)
-[![Electron](https://img.shields.io/badge/Electron-Desktop-47848F?style=for-the-badge&logo=electron)](#)
+[![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?style=for-the-badge&logo=go)](https://go.dev/)
+[![React + Vite](https://img.shields.io/badge/React_19_+_Vite-Frontend-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![Electron](https://img.shields.io/badge/Electron-Desktop-47848F?style=for-the-badge&logo=electron)](https://www.electronjs.org/)
 
-> **Sahaay** is a localized, offline-first tactical mesh network designed to maintain critical communication during internet blackouts and natural disasters. 
+> **Sahaay** is an emergency distress-messaging system for disaster scenarios. Victims broadcast prioritised aid requests (food, water, medical, rescue); responders see them in a triage dashboard. It ships as a desktop app that bundles its own backend.
+>
+> The long-term goal is a fully **offline-first peer-to-peer mesh** so devices relay messages with no internet at all. This repo currently implements the **centralised backbone and the desktop client** — the mesh layer is on the roadmap (see below).
 
+---
 
+## ✅ What's built today
 
-##  The Architecture
+### Backend — Go + GraphQL (`/sahaay`)
+- **GraphQL API** served with [`99designs/gqlgen`](https://github.com/99designs/gqlgen) over `localhost:8080`, with an interactive playground.
+- **Domain model** for distress messaging: message types (`FOOD`/`WATER`/`MEDICAL`/`RESCUE`/`SHELTER`/`GENERAL`), urgency levels (`LOW`→`CRITICAL`), status lifecycle (`PENDING`→`DELIVERED`→`ACKNOWLEDGED`→`EXPIRED`), GPS location, and expiry.
+- **MongoDB persistence** via the official Go driver so messages survive restarts.
+- Implemented operations: `createUser`, `createDistressMessage`, `users`, `distressMessages`. *(Other resolvers — device/peer nodes, acknowledgements, filtered queries — are scaffolded but not yet implemented.)*
 
-Sahaay operates through a dual-interface system powered by a robust Go backend utilizing `libp2p` for decentralized peer discovery.
+### Desktop client — Electron + React (`/sahaay-desktop`)
+- **React 19 + Vite + Tailwind** tactical UI with a severity-based **message triage** view (CRITICAL messages are visually flagged) and a Leaflet map view.
+- **Backend-as-sidecar:** Electron spawns the compiled Go binary as a child process on launch and shuts it down on quit — the app is self-contained.
+- Polls the GraphQL API every 2s to refresh messages.
 
-### 1. The Core Backend (Go + Libp2p)
-- **True Peer-to-Peer:** Uses multi-address mDNS to discover and connect to local network nodes entirely without the internet.
-- **Event-Driven State:** Operates on an atomic `UIManager` using buffered channels to guarantee thread-safe data synchronization.
-- **GraphQL APIs:** Uses `gqlgen` to serve a high-performance local API over `localhost` for the UI to consume.
-- **Persistent Storage:** Utilizes `bbolt` and `sqlite` to persist critical medical and SOS logs locally on the device.
+> ⚠️ **Note:** Some status-panel metrics (CPU, temperature) are currently simulated placeholders, and the "connected peers" view depends on the not-yet-implemented mesh layer. Battery level uses the real browser Battery API.
 
-### 2. The Tactical UI (Electron + React)
-- **Offline Capable:** Packaged as a desktop application so first-responders don't require browsers or domains.
-- **Live System Monitoring:** Interfaces directly with machine stats (Battery, Connectivity) to give operators a true tactical overview.
-- **Message Prioritization:** Triage system ranging from `Low` to `CRITICAL` with visual alerting.
+## 🗺️ Roadmap (designed, not yet implemented)
+- **Offline-first P2P mesh** using `libp2p` + mDNS for local peer discovery — no internet required.
+- **Message propagation** across peers with `relayCount` + TTL and message-ID de-duplication (the schema already models these fields).
+- **Embedded local storage** (e.g. BoltDB) to remove the MongoDB server dependency and make the app truly offline.
+- Authentication / real sender identity (message sender is currently a placeholder).
 
-##  Tech Stack
-* **Backend:** Go (1.24.6), Libp2p, GraphQL (99designs/gqlgen), BoltDB
-* **Frontend:** React 19, Vite, Tailwind CSS, Lucide Icons, Leaflet (Mapping)
-* **Desktop Wrapper:** Electron & Electron Builder
+## 🧰 Tech Stack
+* **Backend:** Go 1.23+, GraphQL ([99designs/gqlgen](https://github.com/99designs/gqlgen)), MongoDB (official driver)
+* **Frontend:** React 19, Vite, Tailwind CSS, Lucide Icons, Leaflet
+* **Desktop wrapper:** Electron & electron-builder
 
-## 💻 Running it Locally
+## 💻 Running it locally
 
 ### Prerequisites
-- Go 1.24+
+- Go 1.23+
 - Node.js & npm
+- A running **MongoDB** instance on `mongodb://localhost:27017`
 
-### Starting the Mesh Node
+### 1. Start the backend (GraphQL API on :8080)
 ```bash
 cd sahaay
-go run main.go
+go run .
 ```
+Open `http://localhost:8080/` for the GraphQL playground.
 
-### Starting the Desktop Interface
+### 2. Start the desktop app
 ```bash
 cd sahaay-desktop
 npm install
-npm run dev
+npm run start   # launches Vite, waits for it, then opens Electron
 ```
+> `npm run dev` runs only the React frontend in a browser. The Electron shell (`npm run start`) is what spawns the bundled Go backend.
 
 ---
 *Built to keep people connected when they need it most.*
